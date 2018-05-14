@@ -5,13 +5,6 @@ const passport = require('passport');
 const uuid = require('uuid/v4');
 const Middleware = require('..');
 
-const mw = new Middleware('foo');
-
-mw.use('getKey', async(keyId) => {
-  // FIXME: real key data
-  return {id: keyId, owner: 'https://example.com/identity/x'};
-});
-
 const app = express();
 
 let options = null;
@@ -27,6 +20,15 @@ passport.deserializeUser(function(id, done) {
   // User.findById(id, function (err, user) {
   //   done(err, user);
   // });
+});
+
+const mw = new Middleware('foo');
+mw.use('getKey', async({id}) => {
+  // FIXME: real key data
+  return {id, owner: 'https://example.com/identity/x'};
+});
+mw.use('getIdentity', async({id}) => {
+  return {id, name: 'someName'};
 });
 
 app.use(passport.initialize());
